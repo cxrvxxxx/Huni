@@ -12,6 +12,7 @@ public class Huni {
     private String dbUrl = "jdbc:mysql://170.187.197.155:3306/dbHuni";
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        HomeFrame frame = new HomeFrame();
+        frame.setVisible(true);
     }
 }
