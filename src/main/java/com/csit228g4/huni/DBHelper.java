@@ -108,9 +108,10 @@ public class DBHelper {
     
     public int createPlaylist(String name) {
         try {
-            String sql = "SELECT * FROM tblPlaylist WHERE name=?";
+            String sql = "SELECT * FROM tblPlaylist WHERE name=? AND createdBy=?";
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, name);
+            stmt.setString(2, String.valueOf(Session.activeUser.getId()));
             rs = stmt.executeQuery();
             
             if (rs.next()) return -1;
