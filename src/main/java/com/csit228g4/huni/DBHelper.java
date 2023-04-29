@@ -8,7 +8,7 @@ import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 public class DBHelper {
     private final String url, username, password;
     private Connection conn;
-    private Statement stmt;
+    private PreparedStatement stmt;
     private ResultSet rs;
     
     public DBHelper(String url) {
@@ -44,8 +44,10 @@ public class DBHelper {
     
     public ResultSet displayAllRecords(String tableName) {
         try {
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT * FROM " + tableName);
+            String sql = "SELECT * FROM ?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, tableName);
+            rs = stmt.executeQuery();
         } catch (SQLException ex) {
             Logger.getLogger(DBHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -54,22 +56,24 @@ public class DBHelper {
     
     public int register(String username, String password) {
         try {
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT * FROM tblUser WHERE username=" + username);
+            String sql = "SELECT * FROM tblUser WHERE username=?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, username);
+            rs = stmt.executeQuery();
             
             if (rs.next()) return -1;
             
-            stmt = conn.createStatement();
+            sql = "INSERT INTO tblUser (username, password, createdOn) VALUES (?, ?, ?)";
+            stmt = conn.prepareStatement(sql);
             
             java.util.Date date = new java.util.Date();
             String createdOn = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
             
-            int res = stmt.executeUpdate(
-                    "INSERT INTO tblUser (username, password, createdOn)"
-                  + "VALUES (" + username + "," + password + ","+ createdOn + ")"
-            );
-            
-            return res;
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            stmt.setString(3, createdOn);
+                     
+            return stmt.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(DBHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -77,23 +81,23 @@ public class DBHelper {
         return 0;
     }
     
-    public User login(String username, String password) {
-        try {
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(
-                    "SELECT * FROM tblUser WHERE username=" + username + " " +
-                    "AND password=" + password);
-            
-            if (!rs.next()) return new User();
-            
-            java.util.Date date = new java.util.Date();
-            String loginDate = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
-            
-            return new User(rs.getInt("id"), rs.getString("username"), loginDate);
-        } catch (SQLException ex) {
-            Logger.getLogger(DBHelper.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return new User();
-    }
+//    public User login(String username, String password) {
+//        try {
+//            stmt = conn.prepareStatement(sql);
+//            rs = stmt.executeQuery(
+//                    "SELECT * FROM tblUser WHERE username=" + username + " " +
+//                    "AND password=" + password);
+//            
+//            if (!rs.next()) return new User();
+//            
+//            java.util.Date date = new java.util.Date();
+//            String loginDate = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+//            
+//            return new User(rs.getInt("id"), rs.getString("username"), loginDate);
+//        } catch (SQLException ex) {
+//            Logger.getLogger(DBHelper.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
+//        return new User();
+//    }
 }

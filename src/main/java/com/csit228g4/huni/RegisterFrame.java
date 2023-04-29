@@ -4,6 +4,10 @@
  */
 package com.csit228g4.huni;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Brent
@@ -55,8 +59,12 @@ public class RegisterFrame extends javax.swing.JFrame {
 
         btnRegisterSubmit.setText("Submit");
         btnRegisterSubmit.setToolTipText("");
-        btnRegisterSubmit.setEnabled(false);
         btnRegisterSubmit.setFocusable(false);
+        btnRegisterSubmit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegisterSubmitActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Confirm Password");
 
@@ -109,11 +117,36 @@ public class RegisterFrame extends javax.swing.JFrame {
         String pass = String.valueOf(txtPassword.getPassword());
         String confirmPass = String.valueOf(txtConfirmPassword.getPassword());
         
-        if (pass == confirmPass)
+        if (pass.equals(confirmPass))
             btnRegisterSubmit.setEnabled(true);
         else
             btnRegisterSubmit.setEnabled(false);
     }//GEN-LAST:event_txtConfirmPasswordActionPerformed
+
+    private void btnRegisterSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterSubmitActionPerformed
+        // TODO add your handling code here:
+        int res = 0;
+        try {
+            String username = txtUsername.getText();
+            String password = StringHasher.hash(String.valueOf(txtPassword.getPassword()));
+            DBHelper dbh = new DBHelper("jdbc:mysql://170.187.197.155:3306/dbHuni", "huni", "Huni_2023");
+            dbh.connectdb();
+            res = dbh.register(username, password);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(RegisterFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        switch (res) {
+            case 1:
+                javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "You are now registered!");
+                break;
+            case -1:
+                javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Username already exists!");
+                break;
+            default:
+                javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Registration error!");
+        }
+    }//GEN-LAST:event_btnRegisterSubmitActionPerformed
 
     /**
      * @param args the command line arguments
