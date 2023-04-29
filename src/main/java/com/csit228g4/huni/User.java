@@ -12,6 +12,7 @@ public class User {
    private int id;
    private String username;
    private String loginDate;
+   private boolean isLoggedIn = false;
    
    public User() {}
    
@@ -19,6 +20,7 @@ public class User {
        this.id = id;
        this.username = username;
        this.loginDate = loginDate;
+       isLoggedIn = true;
    }
    
    public int getId() { return id; }
@@ -27,4 +29,5 @@ public class User {
    
    public String getLoginDate() { return loginDate; }
 
+   public boolean getLoginStatus() { return isLoggedIn; }
 }

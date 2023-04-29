@@ -8,6 +8,6 @@ package com.csit228g4.huni;
  *
  * @author Brent
  */
-public class Session {
-    public static User activeUser = new User();
+public class EmptyResultSet {
+    
 }

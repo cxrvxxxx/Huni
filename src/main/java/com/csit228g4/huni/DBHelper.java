@@ -22,6 +22,12 @@ public class DBHelper {
     private PreparedStatement stmt;
     private ResultSet rs;
     
+    public DBHelper() {
+        url = "jdbc:mysql://170.187.197.155:3306/dbHuni";
+        username = "huni";
+        password = "Huni_2023";
+    }
+    
     public DBHelper(String url) {
         this.url = url;
         username = "root";
@@ -40,6 +46,10 @@ public class DBHelper {
         } catch (SQLException ex) {
             Logger.getLogger(DBHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    private String getCurrentDate() {
+        return new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
     }
     
     public ResultSet displayAllRecords(String tableName) {
@@ -66,12 +76,9 @@ public class DBHelper {
             sql = "INSERT INTO tblUser (username, password, createdOn) VALUES (?, ?, ?)";
             stmt = conn.prepareStatement(sql);
             
-            java.util.Date date = new java.util.Date();
-            String createdOn = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
-            
             stmt.setString(1, username);
             stmt.setString(2, password);
-            stmt.setString(3, createdOn);
+            stmt.setString(3, getCurrentDate());
                      
             return stmt.executeUpdate();
         } catch (SQLException ex) {
@@ -81,23 +88,67 @@ public class DBHelper {
         return 0;
     }
     
-//    public User login(String username, String password) {
-//        try {
-//            stmt = conn.prepareStatement(sql);
-//            rs = stmt.executeQuery(
-//                    "SELECT * FROM tblUser WHERE username=" + username + " " +
-//                    "AND password=" + password);
-//            
-//            if (!rs.next()) return new User();
-//            
-//            java.util.Date date = new java.util.Date();
-//            String loginDate = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
-//            
-//            return new User(rs.getInt("id"), rs.getString("username"), loginDate);
-//        } catch (SQLException ex) {
-//            Logger.getLogger(DBHelper.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        
-//        return new User();
-//    }
+    public User login(String username, String password) {
+        try {
+            String sql = "SELECT * FROM tblUser WHERE username=? AND password=?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            rs = stmt.executeQuery();
+            
+            if (!rs.next()) return new User();
+            
+            return new User(rs.getInt("id"), rs.getString("username"), getCurrentDate());
+        } catch (SQLException ex) {
+            Logger.getLogger(DBHelper.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return new User();
+    }
+    
+    public int createPlaylist(String name) {
+        try {
+            String sql = "SELECT * FROM tblPlaylist WHERE name=?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, name);
+            rs = stmt.executeQuery();
+            
+            if (rs.next()) return -1;
+            
+            sql = "INSERT INTO tblPlaylist (name, createdBy, createdOn) VALUES (?, ?, ?)";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, name);
+            stmt.setString(2, String.valueOf(Session.activeUser.getId()));
+            stmt.setString(3, getCurrentDate());
+            return stmt.executeUpdate();           
+        } catch (SQLException ex) {
+            Logger.getLogger(DBHelper.class.getName()).log(Level.SEVERE, null, ex);            
+        }
+        
+        return 0;
+    }
+    
+    public ResultSet getAllPlaylists(int userId) {
+        try {
+            String sql = "SELECT * FROM tblPlaylist WHERE createdBy=?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, String.valueOf(userId));
+            rs = stmt.executeQuery();
+        } catch (SQLException ex) {
+            Logger.getLogger(DBHelper.class.getName()).log(Level.SEVERE, null, ex);  
+        }
+        return rs;
+    }
+    
+    public int deletePlaylist(String name) {
+        try {
+            String sql = "DELETE FROM tblPlaylist WHERE name=?";
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, name);
+            return stmt.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(DBHelper.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
 }
