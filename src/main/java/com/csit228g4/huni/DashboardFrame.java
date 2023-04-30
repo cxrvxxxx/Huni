@@ -6,11 +6,7 @@ package com.csit228g4.huni;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.event.TableModelEvent;
+import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -32,7 +28,9 @@ public class DashboardFrame extends javax.swing.JFrame {
         this.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         
+        lblGreeting.setText("Welcome, " + Session.activeUser.getUsername());
         populatePlaylistTable();
+        populatePlaylistSongTable("");
     }
 
     /**
@@ -50,6 +48,11 @@ public class DashboardFrame extends javax.swing.JFrame {
         tblPlaylist = new javax.swing.JTable();
         btnNewPlaylist = new javax.swing.JButton();
         btnDeletePlaylist = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblPlaylistSong = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
+        btnRemoveSong = new javax.swing.JButton();
+        btnAddSong = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -88,39 +91,82 @@ public class DashboardFrame extends javax.swing.JFrame {
             }
         });
 
+        tblPlaylistSong.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Title", "Artist", "Date Added"
+            }
+        ));
+        jScrollPane1.setViewportView(tblPlaylistSong);
+
+        jLabel2.setText("Songs in Playlist");
+
+        btnRemoveSong.setText("Remove");
+        btnRemoveSong.setFocusable(false);
+
+        btnAddSong.setText("Add Song");
+        btnAddSong.setEnabled(false);
+        btnAddSong.setFocusable(false);
+        btnAddSong.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddSongActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(35, 35, 35)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addComponent(lblGreeting))
-                        .addGap(183, 183, 183))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGap(176, 176, 176))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                             .addComponent(btnDeletePlaylist)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnNewPlaylist))
                         .addComponent(jSchollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(258, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnAddSong)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnRemoveSong))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2)))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(36, 36, 36)
-                .addComponent(lblGreeting)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSchollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblGreeting)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSchollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNewPlaylist)
-                    .addComponent(btnDeletePlaylist))
+                    .addComponent(btnDeletePlaylist)
+                    .addComponent(btnRemoveSong)
+                    .addComponent(btnAddSong))
                 .addContainerGap(36, Short.MAX_VALUE))
         );
 
@@ -152,22 +198,31 @@ public class DashboardFrame extends javax.swing.JFrame {
         
         populatePlaylistTable();
     }//GEN-LAST:event_btnDeletePlaylistActionPerformed
+
+    private void btnAddSongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddSongActionPerformed
+        // TODO add your handling code here:
+        this.setVisible(false);
+        String playlistName = tblPlaylist.getValueAt(tblPlaylist.getSelectedRow(), 0).toString();
+        Playlist pl = dbh.getPlaylist(playlistName);
+        AddSongFrame addSongFrame = new AddSongFrame(pl.getId());
+        addSongFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                showDashboardFrame();
+            }
+        });
+        addSongFrame.setVisible(true);
+    }//GEN-LAST:event_btnAddSongActionPerformed
     
     private void populatePlaylistTable() {
-        lblGreeting.setText("Welcome, " + Session.activeUser.getUsername());
-        
         DefaultTableModel tableModel = new DefaultTableModel();
         tableModel.addColumn("Name");
         tableModel.addColumn("Date Created");
         
-        ResultSet rs = dbh.getAllPlaylists(Session.activeUser.getId());
-        try {
-            while (rs.next()) {
-                Object[] row = { rs.getString("name"), rs.getDate("createdOn") };
-                tableModel.addRow(row);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(DashboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+        ArrayList<Playlist> playlists = dbh.getAllPlaylists();
+        for (Playlist pl : playlists) {
+            Object[] row = { pl.getName(), pl.getCreatedOn() };
+            tableModel.addRow(row);
         }
         
         tblPlaylist.setModel(tableModel);
@@ -176,7 +231,34 @@ public class DashboardFrame extends javax.swing.JFrame {
         tblPlaylist.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 btnDeletePlaylist.setEnabled(tblPlaylist.getSelectedRow() != -1);
+                if (tblPlaylist.getSelectedRow() != -1) {
+                    btnAddSong.setEnabled(tblPlaylist.getSelectedRow() != -1);
+                    populatePlaylistSongTable(tblPlaylist.getModel().getValueAt(tblPlaylist.getSelectedRow(), 0).toString());
+                }
             }
+        });
+    }
+    
+    private void populatePlaylistSongTable(String playlistName) {
+        DefaultTableModel tableModel = new DefaultTableModel();
+        tableModel.addColumn("Title");
+        tableModel.addColumn("Artist");
+        tableModel.addColumn("Date Added");
+        
+        if (!playlistName.equals("")) {
+            Playlist pl = dbh.getPlaylist(playlistName);
+            ArrayList<Song> songs = dbh.getAllSongsFromPlaylist(pl.getName());
+            for (Song song : songs) {
+                Object[] row = { song.getTitle(), song.getAuthor(), pl.getCreatedOn() };
+                tableModel.addRow(row);
+            }
+        }
+        
+        tblPlaylistSong.setModel(tableModel);
+        tblPlaylistSong.setDefaultEditor(Object.class, null);
+        
+        tblPlaylistSong.getSelectionModel().addListSelectionListener(e -> {
+            // Add delete button handling here
         });
     }
     
@@ -220,11 +302,16 @@ public class DashboardFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddSong;
     private javax.swing.JButton btnDeletePlaylist;
     private javax.swing.JButton btnNewPlaylist;
+    private javax.swing.JButton btnRemoveSong;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jSchollPane1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblGreeting;
     private javax.swing.JTable tblPlaylist;
+    private javax.swing.JTable tblPlaylistSong;
     // End of variables declaration//GEN-END:variables
 }
