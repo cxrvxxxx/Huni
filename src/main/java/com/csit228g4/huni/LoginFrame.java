@@ -4,20 +4,33 @@
  */
 package com.csit228g4.huni;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
 /**
  *
  * @author Brent
  */
-public class LoginFrame extends javax.swing.JFrame {
-
+public class LoginFrame extends javax.swing.JFrame implements DocumentListener {
+    private DBHelper dbh;
     /**
      * Creates new form LoginFrame
      */
     public LoginFrame() {
         initComponents();
+        
+        dbh = new DBHelper();
+        dbh.connectdb();
+        
         this.setLocationRelativeTo(null);
         this.setTitle("Login - Huni");
         this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
+        
+        txtUsername.getDocument().addDocumentListener(LoginFrame.this);
+        txtPassword.getDocument().addDocumentListener(LoginFrame.this);
     }
 
     /**
@@ -29,23 +42,112 @@ public class LoginFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        txtUsername = new javax.swing.JTextField();
+        txtPassword = new javax.swing.JPasswordField();
+        btnLogin = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel1.setText("Login");
+
+        btnLogin.setText("Login");
+        btnLogin.setEnabled(false);
+        btnLogin.setFocusable(false);
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Username");
+
+        jLabel3.setText("Password");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(91, 91, 91)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(txtUsername, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(txtPassword, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(btnLogin))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel2))
+                        .addGap(160, 160, 160)))
+                .addGap(96, 96, 96))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(62, 62, 62)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnLogin)
+                .addContainerGap(65, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        try {
+            // TODO add your handling code here:
+            String username = txtUsername.getText();
+            String password = StringHasher.hash(String.valueOf(txtPassword.getPassword()));
+            User user = dbh.login(username, password);
+            if (!user.getLoginStatus()) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Invalid credentials!");
+                return;
+            }
+            Session.activeUser = user;
+            this.dispose();
+            
+            DashboardFrame dframe = new DashboardFrame();
+            dframe.setVisible(true);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnLoginActionPerformed
+
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+        updateButtonState();
+    }
+    
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        updateButtonState();
+    }
+    
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+        updateButtonState();
+    }
+    
+    private void updateButtonState() {
+        btnLogin.setEnabled(txtUsername.getText().length() > 0 && txtPassword.getPassword().length > 0);
+    }
     /**
      * @param args the command line arguments
      */
@@ -82,5 +184,11 @@ public class LoginFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnLogin;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPasswordField txtPassword;
+    private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 }
