@@ -11,20 +11,26 @@ import javax.swing.event.DocumentListener;
  *
  * @author Brent
  */
-public class NewPlaylistFrame extends javax.swing.JFrame implements DocumentListener {
+public class EditPlaylistFrame extends javax.swing.JFrame implements DocumentListener {
+    private final Playlist pl;
     /**
-     * Creates new form NewPlaylistFrame
+     * Creates new form EditPlaylistFrame
+     * @param pl
      */
-    public NewPlaylistFrame() {
+    public EditPlaylistFrame(Playlist pl) {
         initComponents();
+        this.pl = pl;
         
         // Set window behavior
-        this.setTitle("Create a playlist");
+        this.setTitle("Add a song to playlist");
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         
-        // Add listener to textfield
-        txtPlaylistName.getDocument().addDocumentListener(NewPlaylistFrame.this);
+        // Set textfield text
+        txtPlaylistName.setText(pl.getName());
+        
+        // Add listeners
+        txtPlaylistName.getDocument().addDocumentListener(EditPlaylistFrame.this);
     }
 
     /**
@@ -38,19 +44,19 @@ public class NewPlaylistFrame extends javax.swing.JFrame implements DocumentList
 
         jLabel1 = new javax.swing.JLabel();
         txtPlaylistName = new javax.swing.JTextField();
-        btnCreatePlaylist = new javax.swing.JButton();
+        btnRenamePlaylist = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(400, 100));
         setResizable(false);
 
-        jLabel1.setText("Playlist name");
+        jLabel1.setText("Rename playlist");
 
-        btnCreatePlaylist.setText("Create");
-        btnCreatePlaylist.setEnabled(false);
-        btnCreatePlaylist.addActionListener(new java.awt.event.ActionListener() {
+        btnRenamePlaylist.setText("Rename");
+        btnRenamePlaylist.setEnabled(false);
+        btnRenamePlaylist.setFocusable(false);
+        btnRenamePlaylist.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCreatePlaylistActionPerformed(evt);
+                btnRenamePlaylistActionPerformed(evt);
             }
         });
 
@@ -59,51 +65,52 @@ public class NewPlaylistFrame extends javax.swing.JFrame implements DocumentList
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtPlaylistName, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCreatePlaylist)
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addGap(22, 22, 22)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(txtPlaylistName, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRenamePlaylist)))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
+                .addGap(25, 25, 25)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
                     .addComponent(txtPlaylistName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCreatePlaylist))
-                .addContainerGap(59, Short.MAX_VALUE))
+                    .addComponent(btnRenamePlaylist))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnCreatePlaylistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreatePlaylistActionPerformed
-        // Handles "New Playlist" button click
-        int res = 0;
+    private void btnRenamePlaylistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRenamePlaylistActionPerformed
+        // Handles "Rename" button click
+        // Get playlist name
+        String playlistName = txtPlaylistName.getText();
         
-        // Retreive data from textfield
-        String name = txtPlaylistName.getText();
+        // Set playlist to new name
+        pl.setName(playlistName);
         
-        // Pass data to DBHelper and call createPlaylist method
-        res = Session.dbh.createPlaylist(name);
+        // Pass data to DBHelper and call updatePlaylist method
+        int res = Session.dbh.updatePlaylist(pl);
         
         // Handle user responses
         switch (res) {
             // Success
-            case 1 -> {
-                javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Playlist created!");
-                this.dispose();
-            }
-            // Check fail
-            case -1 -> javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Name already taken!");
-            // Other failure
-            default -> javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Cannot create playlist.");
+            case 1 -> javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Playlist renamed");
+            // Fail
+            default -> javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Cannot rename playlist");
         }
-    }//GEN-LAST:event_btnCreatePlaylistActionPerformed
+        
+        if (res == 1)
+            this.dispose();
+    }//GEN-LAST:event_btnRenamePlaylistActionPerformed
     
     @Override
     public void changedUpdate(DocumentEvent e) {
@@ -113,22 +120,17 @@ public class NewPlaylistFrame extends javax.swing.JFrame implements DocumentList
     @Override
     public void insertUpdate(DocumentEvent e) {
         updateButtonState();
-
     }
     
     @Override
     public void removeUpdate(DocumentEvent e) {
         updateButtonState();
-
     }
     
     private void updateButtonState() {
-        // Get textfield state
-        boolean enabledButton = txtPlaylistName.getText().length() > 0;
-        
-        // Enable/disable button
-        btnCreatePlaylist.setEnabled(enabledButton);
+        btnRenamePlaylist.setEnabled(txtPlaylistName.getText().length() > 0 && !txtPlaylistName.getText().equals(pl.getName()));
     }
+    
     /**
      * @param args the command line arguments
      */
@@ -146,24 +148,24 @@ public class NewPlaylistFrame extends javax.swing.JFrame implements DocumentList
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewPlaylistFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditPlaylistFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewPlaylistFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditPlaylistFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewPlaylistFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditPlaylistFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewPlaylistFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditPlaylistFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new NewPlaylistFrame().setVisible(true);
+            new EditPlaylistFrame(new Playlist()).setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCreatePlaylist;
+    private javax.swing.JButton btnRenamePlaylist;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JTextField txtPlaylistName;
     // End of variables declaration//GEN-END:variables

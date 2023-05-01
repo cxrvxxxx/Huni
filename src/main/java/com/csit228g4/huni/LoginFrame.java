@@ -15,20 +15,18 @@ import javax.swing.event.DocumentListener;
  * @author Brent
  */
 public class LoginFrame extends javax.swing.JFrame implements DocumentListener {
-    private DBHelper dbh;
     /**
      * Creates new form LoginFrame
      */
     public LoginFrame() {
         initComponents();
         
-        dbh = new DBHelper();
-        dbh.connectdb();
-        
+        // Set window behavior
         this.setLocationRelativeTo(null);
         this.setTitle("Login - Huni");
         this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         
+        // Add listener to textfields
         txtUsername.getDocument().addDocumentListener(LoginFrame.this);
         txtPassword.getDocument().addDocumentListener(LoginFrame.this);
     }
@@ -111,18 +109,27 @@ public class LoginFrame extends javax.swing.JFrame implements DocumentListener {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        // Handle "Login" button click
         try {
-            // TODO add your handling code here:
+            // Get data from textfields
             String username = txtUsername.getText();
-            String password = StringHasher.hash(String.valueOf(txtPassword.getPassword()));
-            User user = dbh.login(username, password);
+            String password = StringHasher.hash(String.valueOf(txtPassword.getPassword())); // Hash password
+            
+            // Pass data to DBHelper and call login method
+            User user = Session.dbh.login(username, password);
             if (!user.getLoginStatus()) {
+                // Send user response if credentials are invalid
                 javax.swing.JOptionPane.showMessageDialog(this, "Invalid credentials!");
                 return;
             }
+            
+            // Set active user to current user
             Session.activeUser = user;
+            
+            // Close window
             this.dispose();
             
+            // Init dashboard frame and set to visible
             DashboardFrame dframe = new DashboardFrame();
             dframe.setVisible(true);
         } catch (NoSuchAlgorithmException ex) {
@@ -146,6 +153,7 @@ public class LoginFrame extends javax.swing.JFrame implements DocumentListener {
     }
     
     private void updateButtonState() {
+        // Enable login button if username and password fields are not empty
         btnLogin.setEnabled(txtUsername.getText().length() > 0 && txtPassword.getPassword().length > 0);
     }
     /**
@@ -176,10 +184,8 @@ public class LoginFrame extends javax.swing.JFrame implements DocumentListener {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new LoginFrame().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new LoginFrame().setVisible(true);
         });
     }
 

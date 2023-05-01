@@ -7,6 +7,8 @@ package com.csit228g4.huni;
 /**
  *
  * @author Brent
+ * 
+ * This class handles the hashing of text data for passwords
  */
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

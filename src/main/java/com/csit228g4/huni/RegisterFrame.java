@@ -15,19 +15,18 @@ import java.util.logging.Logger;
  * @author Brent
  */
 public class RegisterFrame extends javax.swing.JFrame implements DocumentListener {
-    private final DBHelper dbh;
     /**
      * Creates new form RegisterForm
      */
     public RegisterFrame() {
         initComponents();
-        dbh = new DBHelper();
-        dbh.connectdb();
         
+        // Set window behavior
         this.setTitle("Register - Huni");
         this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(null);
         
+        // Add listeners
         txtPassword.getDocument().addDocumentListener(RegisterFrame.this);
         txtConfirmPassword.getDocument().addDocumentListener(RegisterFrame.this);
     }
@@ -143,29 +142,44 @@ public class RegisterFrame extends javax.swing.JFrame implements DocumentListene
     }
     
     private void updateButtonState() {
+        // Update button state
+        // Retrieve textfield state
         String password = String.valueOf(txtPassword.getPassword());
         String confirmPassword = String.valueOf(txtConfirmPassword.getPassword());
         boolean enableButton = password.equals(confirmPassword) && password.length() >= 8 && confirmPassword.length() >= 8;
+        
+        // Enable/disable button
         btnRegisterSubmit.setEnabled(enableButton);
-
     }
     
     private void btnRegisterSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterSubmitActionPerformed
-        // TODO add your handling code here:
+        // Handle "Submit" button click
         int res = 0;
+        
         try {
+            // Retrieve input data
             String username = txtUsername.getText();
             String password = StringHasher.hash(String.valueOf(txtPassword.getPassword()));
-            res = dbh.register(username, password);
+            
+            // Pass data to DBHelper and call register method
+            res = Session.dbh.register(username, password);
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(RegisterFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        // Handle user responses
         switch (res) {
+            // Success
             case 1 -> javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "You are now registered!");
+            // Check fail
             case -1 -> javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Username already exists!");
+            // Other failures
             default -> javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Registration error!");
         }
+        
+        // Close this window if successful
+        if (res == 1)
+            this.dispose();
     }//GEN-LAST:event_btnRegisterSubmitActionPerformed
 
     /**
@@ -197,10 +211,8 @@ public class RegisterFrame extends javax.swing.JFrame implements DocumentListene
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new RegisterFrame().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new RegisterFrame().setVisible(true);
         });
     }
 
