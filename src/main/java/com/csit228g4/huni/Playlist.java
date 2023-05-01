@@ -27,4 +27,6 @@ public class Playlist {
     public String getName() { return name; }
     public int getCreatedBy() { return createdBy; }
     public String getCreatedOn() { return createdOn; }
+    
+    public void setName(String name) { this.name = name; }
 }

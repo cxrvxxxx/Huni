@@ -7,7 +7,10 @@ package com.csit228g4.huni;
 /**
  *
  * @author Brent
+ * 
+ * This class stores the data for the currently logged in user
  */
 public class Session {
     public static User activeUser = new User();
+    public static DBHelper dbh = new DBHelper();
 }

@@ -17,6 +17,8 @@ public class HomeFrame extends javax.swing.JFrame {
      */
     public HomeFrame() {
         initComponents();
+        
+        // Set window behavior
         this.setLocationRelativeTo(null);
     }
 
@@ -103,8 +105,11 @@ public class HomeFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        // TODO add your handling code here:
+        // Handle "Login" button click
+        // Hide this window
         this.setVisible(false);
+        
+        // Init frame instance and add listener
         LoginFrame loginFrame = new LoginFrame();
         loginFrame.addWindowListener(new WindowAdapter() {
             @Override
@@ -113,12 +118,17 @@ public class HomeFrame extends javax.swing.JFrame {
                     showHomeFrame();
             }
         });
+        
+        // Make frame visible
         loginFrame.setVisible(true);
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
-        // TODO add your handling code here:
+        // Handle "Register" button click
+        // Hide this window
         this.setVisible(false);
+        
+        // Init frame instance and add listener
         RegisterFrame registerFrame = new RegisterFrame();
         registerFrame.addWindowListener(new WindowAdapter() {
             @Override
@@ -126,10 +136,13 @@ public class HomeFrame extends javax.swing.JFrame {
                 showHomeFrame();
             }
         });
+        
+        // Make frame visible
         registerFrame.setVisible(true);
     }//GEN-LAST:event_btnRegisterActionPerformed
     
     private void showHomeFrame() {
+        // Show this window
         this.setVisible(true);
     }
     /**

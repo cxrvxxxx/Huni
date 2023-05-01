@@ -14,21 +14,21 @@ import javax.swing.table.DefaultTableModel;
  * @author Brent
  */
 public class DashboardFrame extends javax.swing.JFrame {
-    private DBHelper dbh;
     /**
      * Creates new form DashboardFrame
      */
     public DashboardFrame() {
         initComponents();
         
-        dbh = new DBHelper();
-        dbh.connectdb();
-        
+        // Set window behavior
         this.setTitle("Dashboard - Huni");
         this.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         
+        // Set header message on login
         lblGreeting.setText("Welcome, " + Session.activeUser.getUsername());
+        
+        // Populate tables
         populatePlaylistTable();
         populatePlaylistSongTable("");
     }
@@ -42,22 +42,25 @@ public class DashboardFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblGreeting = new javax.swing.JLabel();
+        playlistPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jSchollPane1 = new javax.swing.JScrollPane();
         tblPlaylist = new javax.swing.JTable();
-        btnNewPlaylist = new javax.swing.JButton();
         btnDeletePlaylist = new javax.swing.JButton();
+        btnNewPlaylist = new javax.swing.JButton();
+        btnEditPlaylist = new javax.swing.JButton();
+        playlistSongPanel = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblPlaylistSong = new javax.swing.JTable();
-        jLabel2 = new javax.swing.JLabel();
-        btnRemoveSong = new javax.swing.JButton();
         btnAddSong = new javax.swing.JButton();
+        btnRemoveSong = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        lblGreeting = new javax.swing.JLabel();
+        btnLogout = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
-
-        lblGreeting.setText("Welcome, user");
 
         jLabel1.setText("My Playlists");
 
@@ -74,14 +77,6 @@ public class DashboardFrame extends javax.swing.JFrame {
         ));
         jSchollPane1.setViewportView(tblPlaylist);
 
-        btnNewPlaylist.setText("New Playlist");
-        btnNewPlaylist.setFocusable(false);
-        btnNewPlaylist.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNewPlaylistActionPerformed(evt);
-            }
-        });
-
         btnDeletePlaylist.setText("Delete");
         btnDeletePlaylist.setEnabled(false);
         btnDeletePlaylist.setFocusable(false);
@@ -90,6 +85,60 @@ public class DashboardFrame extends javax.swing.JFrame {
                 btnDeletePlaylistActionPerformed(evt);
             }
         });
+
+        btnNewPlaylist.setText("New...");
+        btnNewPlaylist.setFocusable(false);
+        btnNewPlaylist.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNewPlaylistActionPerformed(evt);
+            }
+        });
+
+        btnEditPlaylist.setText("Edit");
+        btnEditPlaylist.setEnabled(false);
+        btnEditPlaylist.setFocusable(false);
+        btnEditPlaylist.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditPlaylistActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout playlistPanelLayout = new javax.swing.GroupLayout(playlistPanel);
+        playlistPanel.setLayout(playlistPanelLayout);
+        playlistPanelLayout.setHorizontalGroup(
+            playlistPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(playlistPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(playlistPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(playlistPanelLayout.createSequentialGroup()
+                        .addComponent(btnDeletePlaylist)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnEditPlaylist)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnNewPlaylist))
+                    .addGroup(playlistPanelLayout.createSequentialGroup()
+                        .addGroup(playlistPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jSchollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        playlistPanelLayout.setVerticalGroup(
+            playlistPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(playlistPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSchollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(playlistPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnDeletePlaylist)
+                    .addComponent(btnNewPlaylist)
+                    .addComponent(btnEditPlaylist))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jLabel2.setText("Songs in Playlist");
 
         tblPlaylistSong.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -104,11 +153,6 @@ public class DashboardFrame extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblPlaylistSong);
 
-        jLabel2.setText("Songs in Playlist");
-
-        btnRemoveSong.setText("Remove");
-        btnRemoveSong.setFocusable(false);
-
         btnAddSong.setText("Add Song");
         btnAddSong.setEnabled(false);
         btnAddSong.setFocusable(false);
@@ -118,64 +162,110 @@ public class DashboardFrame extends javax.swing.JFrame {
             }
         });
 
+        btnRemoveSong.setText("Remove");
+        btnRemoveSong.setEnabled(false);
+        btnRemoveSong.setFocusable(false);
+        btnRemoveSong.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveSongActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout playlistSongPanelLayout = new javax.swing.GroupLayout(playlistSongPanel);
+        playlistSongPanel.setLayout(playlistSongPanelLayout);
+        playlistSongPanelLayout.setHorizontalGroup(
+            playlistSongPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(playlistSongPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(playlistSongPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(playlistSongPanelLayout.createSequentialGroup()
+                        .addComponent(btnAddSong)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnRemoveSong))
+                    .addGroup(playlistSongPanelLayout.createSequentialGroup()
+                        .addGroup(playlistSongPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 1, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        playlistSongPanelLayout.setVerticalGroup(
+            playlistSongPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(playlistSongPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(playlistSongPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAddSong)
+                    .addComponent(btnRemoveSong))
+                .addContainerGap())
+        );
+
+        lblGreeting.setText("Welcome, user");
+
+        btnLogout.setText("Logout");
+        btnLogout.setFocusable(false);
+        btnLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogoutActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblGreeting)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnLogout)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(btnLogout)
+                .addComponent(lblGreeting))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(35, 35, 35)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(lblGreeting))
-                        .addGap(176, 176, 176))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addComponent(btnDeletePlaylist)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnNewPlaylist))
-                        .addComponent(jSchollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAddSong)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnRemoveSong))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel2)))
-                .addContainerGap(30, Short.MAX_VALUE))
+                        .addComponent(playlistPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(37, 37, 37)
+                        .addComponent(playlistSongPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblGreeting)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSchollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnNewPlaylist)
-                    .addComponent(btnDeletePlaylist)
-                    .addComponent(btnRemoveSong)
-                    .addComponent(btnAddSong))
-                .addContainerGap(36, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(33, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(playlistPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(playlistSongPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(26, 26, 26))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNewPlaylistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewPlaylistActionPerformed
-        // TODO add your handling code here:
+        // Handles "New Playlist" button click
+        // Hide this window
         this.setVisible(false);
+        
+        // Init frame instance and add listener for closing window
         NewPlaylistFrame newPlaylistFrame = new NewPlaylistFrame();
         newPlaylistFrame.addWindowListener(new WindowAdapter() {
             @Override
@@ -183,27 +273,44 @@ public class DashboardFrame extends javax.swing.JFrame {
                 showDashboardFrame();
             }
         });
+        
+        // Make frame visible
         newPlaylistFrame.setVisible(true);
     }//GEN-LAST:event_btnNewPlaylistActionPerformed
 
     private void btnDeletePlaylistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletePlaylistActionPerformed
-        // TODO add your handling code here:
+        // handles "Delete" playlist button click
+        // Retreive playlist name from highlighted row
         String name = tblPlaylist.getValueAt(tblPlaylist.getSelectedRow(), 0).toString();
-        int res = dbh.deletePlaylist(name);
         
+        // Pass data to DBHelper and call deletePlaylist method
+        int res = Session.dbh.deletePlaylist(name);
+        
+        // Handle user response
         switch (res) {
+            // Success
             case 1 -> javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Deleted playlist '" + name + "'.");
+            // Fail
             default -> javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Cannot delete playlist");
         }
         
+        // Repopulate tables
         populatePlaylistTable();
+        populatePlaylistSongTable("");
     }//GEN-LAST:event_btnDeletePlaylistActionPerformed
 
     private void btnAddSongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddSongActionPerformed
-        // TODO add your handling code here:
+        // Handles "Add Song" button click
+        // Hide this window
         this.setVisible(false);
+        
+        // Retreive playlist name from highlighted row
         String playlistName = tblPlaylist.getValueAt(tblPlaylist.getSelectedRow(), 0).toString();
-        Playlist pl = dbh.getPlaylist(playlistName);
+        
+        // Pass data to DBHelper and call getPlaylist method
+        Playlist pl = Session.dbh.getPlaylist(playlistName);
+        
+        // Init frame instance and add listener for window closing
         AddSongFrame addSongFrame = new AddSongFrame(pl.getId());
         addSongFrame.addWindowListener(new WindowAdapter() {
             @Override
@@ -211,59 +318,160 @@ public class DashboardFrame extends javax.swing.JFrame {
                 showDashboardFrame();
             }
         });
+        
+        // Make frame visible
         addSongFrame.setVisible(true);
     }//GEN-LAST:event_btnAddSongActionPerformed
+
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        // Handles "Logout" button click
+        // Options
+        String[] options = {"Yes", "No", "Cancel"};
+        int choice = javax.swing.JOptionPane.showOptionDialog(this.getContentPane(), "Do you want to logout?", "Confirmation", javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        
+        switch (choice) {
+            case javax.swing.JOptionPane.YES_OPTION -> {
+                // Close this window
+                this.dispose();
+                
+                // Set active user to default user
+                Session.activeUser = new User();
+                
+                // Init homeFrame and set to visible
+                HomeFrame homeFrame = new HomeFrame();
+                homeFrame.setVisible(true);
+            }
+            case javax.swing.JOptionPane.NO_OPTION -> {
+                return;
+            }
+            case javax.swing.JOptionPane.CANCEL_OPTION -> {
+                return;
+            }
+        }
+    }//GEN-LAST:event_btnLogoutActionPerformed
+
+    private void btnEditPlaylistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditPlaylistActionPerformed
+        // Handle "Edit" playlist button click
+        // Hide this window
+        this.setVisible(false);
+        
+        // Retreive playlist name from highlighted row
+        String playlistName = tblPlaylist.getValueAt(tblPlaylist.getSelectedRow(), 0).toString();
+        
+        // Pass data to DBHelper and call getPlaylist method
+        Playlist pl = Session.dbh.getPlaylist(playlistName);
+        
+        // Init frame instance and add listener for window closing
+        EditPlaylistFrame edutPlaylistFrame = new EditPlaylistFrame(pl);
+        edutPlaylistFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                showDashboardFrame();
+            }
+        });
+        
+        // Make frame visible
+        edutPlaylistFrame.setVisible(true);
+    }//GEN-LAST:event_btnEditPlaylistActionPerformed
+
+    private void btnRemoveSongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveSongActionPerformed
+        // Handles "Remove" song button click
+        // Retrieve song and playlist
+        Song song = Session.dbh.getSong(tblPlaylistSong.getValueAt(tblPlaylistSong.getSelectedRow(), 0).toString());
+        Playlist pl = Session.dbh.getPlaylist(tblPlaylist.getValueAt(tblPlaylist.getSelectedRow(), 0).toString());
+        
+        // Pass data to DBHelper and call removePlaylistSong method
+        int res = Session.dbh.removePlaylistSong(pl.getId(), song.getId());
+        
+        // Handle user responses
+        switch (res) {
+            // Succsess
+            case 1 -> javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Song removed");
+            // Fail
+            default -> javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Cannot remove song");
+        }
+        
+        populatePlaylistSongTable(pl.getName());
+    }//GEN-LAST:event_btnRemoveSongActionPerformed
     
     private void populatePlaylistTable() {
+        // Handles adding entries to playlist table
+        // Init new table model
         DefaultTableModel tableModel = new DefaultTableModel();
         tableModel.addColumn("Name");
         tableModel.addColumn("Date Created");
         
-        ArrayList<Playlist> playlists = dbh.getAllPlaylists();
+        // Retrieve playlist made by current user from database and add an entry to model
+        ArrayList<Playlist> playlists = Session.dbh.getAllPlaylists();
         for (Playlist pl : playlists) {
             Object[] row = { pl.getName(), pl.getCreatedOn() };
             tableModel.addRow(row);
         }
         
+        // Update table with new model
         tblPlaylist.setModel(tableModel);
         tblPlaylist.setDefaultEditor(Object.class, null);
         
+        // Add listener for when a row is selected in the table
         tblPlaylist.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                btnDeletePlaylist.setEnabled(tblPlaylist.getSelectedRow() != -1);
-                if (tblPlaylist.getSelectedRow() != -1) {
-                    btnAddSong.setEnabled(tblPlaylist.getSelectedRow() != -1);
-                    populatePlaylistSongTable(tblPlaylist.getModel().getValueAt(tblPlaylist.getSelectedRow(), 0).toString());
-                }
+            // Get table selection state
+            boolean hasPlaylistSelected = tblPlaylist.getSelectedRow() != -1;
+            boolean hasSongSelected = tblPlaylistSong.getSelectedRow() != -1;
+            
+            // Enable/disable buttons
+            btnDeletePlaylist.setEnabled(hasPlaylistSelected);
+            btnAddSong.setEnabled(hasPlaylistSelected);
+            btnEditPlaylist.setEnabled(hasPlaylistSelected);
+            btnRemoveSong.setEnabled(hasSongSelected);
+            
+            // Repopulate playlist table of a row is selected
+            if (hasPlaylistSelected) {
+                populatePlaylistSongTable(tblPlaylist.getModel().getValueAt(tblPlaylist.getSelectedRow(), 0).toString());
             }
         });
     }
     
     private void populatePlaylistSongTable(String playlistName) {
+        // Handles adding entries to playlistSong table
+        // Init table model
         DefaultTableModel tableModel = new DefaultTableModel();
         tableModel.addColumn("Title");
         tableModel.addColumn("Artist");
         tableModel.addColumn("Date Added");
         
+        // Check if playlist name is not blank
         if (!playlistName.equals("")) {
-            Playlist pl = dbh.getPlaylist(playlistName);
-            ArrayList<Song> songs = dbh.getAllSongsFromPlaylist(pl.getName());
+            // Retrieve playlist
+            Playlist pl = Session.dbh.getPlaylist(playlistName);
+            // Retrieve songs from database and add entries to table
+            ArrayList<Song> songs = Session.dbh.getAllSongsFromPlaylist(pl.getName());
             for (Song song : songs) {
                 Object[] row = { song.getTitle(), song.getAuthor(), pl.getCreatedOn() };
                 tableModel.addRow(row);
             }
         }
         
+        // Update table with new model
         tblPlaylistSong.setModel(tableModel);
         tblPlaylistSong.setDefaultEditor(Object.class, null);
         
+        // Add listener for when a row is selected
         tblPlaylistSong.getSelectionModel().addListSelectionListener(e -> {
-            // Add delete button handling here
+            // Retrieve table selection state
+            boolean hasSelection = tblPlaylistSong.getSelectedRow() != -1;
+            // Enable buttons based on selection state
+            btnRemoveSong.setEnabled(hasSelection);
         });
     }
     
     private void showDashboardFrame() {
+        // Show this window
         this.setVisible(true);
+        
+        // Enable/disable buttons based on selection state
+        btnAddSong.setEnabled(tblPlaylistSong.getSelectedRow() != -1);
+        
+        // Populate table
         populatePlaylistTable();
     }
     /**
@@ -294,23 +502,26 @@ public class DashboardFrame extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new DashboardFrame().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new DashboardFrame().setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddSong;
     private javax.swing.JButton btnDeletePlaylist;
+    private javax.swing.JButton btnEditPlaylist;
+    private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnNewPlaylist;
     private javax.swing.JButton btnRemoveSong;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jSchollPane1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblGreeting;
+    private javax.swing.JPanel playlistPanel;
+    private javax.swing.JPanel playlistSongPanel;
     private javax.swing.JTable tblPlaylist;
     private javax.swing.JTable tblPlaylistSong;
     // End of variables declaration//GEN-END:variables

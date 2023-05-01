@@ -12,20 +12,18 @@ import javax.swing.event.DocumentListener;
  * @author Brent
  */
 public class AddNewSongFrame extends javax.swing.JFrame implements DocumentListener {
-    private final DBHelper dbh;
     /**
      * Creates new form AddNewSong
      */
     public AddNewSongFrame() {
         initComponents();
         
-        dbh = new DBHelper();
-        dbh.connectdb();
-        
+        // Set frame behavior
         this.setTitle("New song");
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         
+        // Add event listeners to textfields
         txtSongTitle.getDocument().addDocumentListener(AddNewSongFrame.this);
         txtSongAuthor.getDocument().addDocumentListener(AddNewSongFrame.this);
     }
@@ -96,17 +94,23 @@ public class AddNewSongFrame extends javax.swing.JFrame implements DocumentListe
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddNewSongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddNewSongActionPerformed
-        // TODO add your handling code here:
+        // Handles "Add Song" button click
         String title = txtSongTitle.getText();
         String author = txtSongAuthor.getText();
 
-        int res = dbh.addSong(title, author);
+        // Pass information to DBHelper class
+        int res = Session.dbh.addSong(title, author);
         
+        // Hanle operation response
         switch (res) {
+            // Success
             case 1 -> javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Song added");
+            // Check failed
             case -1 -> javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Song already exists");
+            // Other failure
             default -> javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Cannot add song");
         }
+        // Close this frame
         this.dispose();
     }//GEN-LAST:event_btnAddNewSongActionPerformed
     
@@ -126,6 +130,8 @@ public class AddNewSongFrame extends javax.swing.JFrame implements DocumentListe
     }
     
     private void updateButtonState() {
+        // Handles button state when a change is made to textfields
+        // Enables "Add Song" button if "Title" and "Artist" is not empty
         btnAddNewSong.setEnabled(txtSongTitle.getText().length() > 0 && txtSongAuthor.getText().length() > 0);
     }
     /**
@@ -157,10 +163,8 @@ public class AddNewSongFrame extends javax.swing.JFrame implements DocumentListe
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddNewSongFrame().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new AddNewSongFrame().setVisible(true);
         });
     }
 

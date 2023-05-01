@@ -14,22 +14,23 @@ import javax.swing.table.DefaultTableModel;
  * @author Brent
  */
 public class AddSongFrame extends javax.swing.JFrame {
-    private final DBHelper dbh;
-    private int playlistId;
+    private final int playlistId;
     /**
      * Creates new form AddSongFrame
+     * @param playlistId
      */
     public AddSongFrame(int playlistId) {
         initComponents();
+        
+        // Playlist id to add song to
         this.playlistId = playlistId;
         
-        dbh = new DBHelper();
-        dbh.connectdb();
-        
+        // Set window behavior
         this.setTitle("Add a song to playlist");
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         
+        // Populate tables on window create
         populateSongTable();
     }
 
@@ -120,29 +121,41 @@ public class AddSongFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddSongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddSongActionPerformed
-        // TODO add your handling code here:
+        // Adds the selected song to the playlist
+        // Retrieve rowId that is currently selected
         int activeRow = tblSong.getSelectedRow();
+        // Retrieve user input information
         String title = tblSong.getValueAt(activeRow, 0).toString();
         String author = tblSong.getValueAt(activeRow, 1).toString();
-        Song song = dbh.getSong(title, author);
+        
+        // Pass data to DBHelper instance
+        Song song = Session.dbh.getSong(title, author);
         
         int res = 0;
-        
+        // Add song to playlist if it exists in the database
         if (song.getId() != -1)
-            res = dbh.addPlaylistSong(playlistId, song.getId());
+            res = Session.dbh.addPlaylistSong(playlistId, song.getId());
         
+        // Handle user response
         switch (res) {
+            // Success
             case 1 -> javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Song added to playlist");
+            // SQL check fail
             case -1 -> javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Song already added");
+            // Other failures
             default -> javax.swing.JOptionPane.showMessageDialog(this.getContentPane(), "Cannot add song to playlist");
         }
         
-        this.dispose();
+        // Close window if successful
+        if (res == 1)
+            this.dispose();
     }//GEN-LAST:event_btnAddSongActionPerformed
 
     private void btnNewSongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewSongActionPerformed
-        // TODO add your handling code here:
+        // Opens a window for adding a new song to the database
+        // Hide this window
         this.setVisible(false);
+        // Init frame and add listener
         AddNewSongFrame addNewSongFrame = new AddNewSongFrame();
         addNewSongFrame.addWindowListener(new WindowAdapter() {
             @Override
@@ -154,25 +167,30 @@ public class AddSongFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNewSongActionPerformed
     
     private void populateSongTable() {
+        // Init table model instance
         DefaultTableModel tableModel = new DefaultTableModel();
         tableModel.addColumn("Title");
         tableModel.addColumn("Artist");
         
-        ArrayList<Song> songs = dbh.getAllSongs();
+        // Retrieve songs from database and add an entry to the table model
+        ArrayList<Song> songs = Session.dbh.getAllSongs();
         for (Song song : songs) {
             Object[] row = { song.getTitle(), song.getAuthor() };
             tableModel.addRow(row);            
         }
         
+        // Update table instance with new table model
         tblSong.setModel(tableModel);
         tblSong.setDefaultEditor(Object.class, null);
         
+        // Add listener for when a row is selected in the table
         tblSong.getSelectionModel().addListSelectionListener(e -> {
             btnAddSong.setEnabled(tblSong.getSelectedRow() != -1);
         });
     }
     
     public void showAddSongFrame() {
+        // Show this window and populate table
         this.setVisible(true);
         populateSongTable();
     }
