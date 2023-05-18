@@ -280,6 +280,21 @@ public class DashboardFrame extends javax.swing.JFrame {
 
     private void btnDeletePlaylistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletePlaylistActionPerformed
         // handles "Delete" playlist button click
+        // Confirm
+        String[] options = {"Yes", "No", "Cancel"};
+        int choice = javax.swing.JOptionPane.showOptionDialog(this.getContentPane(), "Do you want to delete this playlist??", "Confirmation", javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        
+        switch (choice) {
+            case javax.swing.JOptionPane.YES_OPTION -> {
+                // Do nothing
+            }
+            case javax.swing.JOptionPane.NO_OPTION -> {
+                return;
+            }
+            case javax.swing.JOptionPane.CANCEL_OPTION -> {
+                return;
+            }
+        }
         // Retreive playlist name from highlighted row
         String name = tblPlaylist.getValueAt(tblPlaylist.getSelectedRow(), 0).toString();
         
@@ -376,6 +391,21 @@ public class DashboardFrame extends javax.swing.JFrame {
 
     private void btnRemoveSongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveSongActionPerformed
         // Handles "Remove" song button click
+        // Confirm
+        String[] options = {"Yes", "No", "Cancel"};
+        int choice = javax.swing.JOptionPane.showOptionDialog(this.getContentPane(), "Do you want to remove this song??", "Confirmation", javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        
+        switch (choice) {
+            case javax.swing.JOptionPane.YES_OPTION -> {
+                // Do nothing
+            }
+            case javax.swing.JOptionPane.NO_OPTION -> {
+                return;
+            }
+            case javax.swing.JOptionPane.CANCEL_OPTION -> {
+                return;
+            }
+        }
         // Retrieve song and playlist
         Song song = Session.dbh.getSong(tblPlaylistSong.getValueAt(tblPlaylistSong.getSelectedRow(), 0).toString());
         Playlist pl = Session.dbh.getPlaylist(tblPlaylist.getValueAt(tblPlaylist.getSelectedRow(), 0).toString());
