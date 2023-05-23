@@ -73,7 +73,7 @@ public class DBHelper {
                 return -1;
             
             // Add the user data to the database
-            String sql = "INSERT INTO tblUser (username, password, createdOn) VALUES ('" + username + "', '" + password + "'. '" + getCurrentDate() + "')";
+            String sql = "INSERT INTO tblUser (username, password, createdOn) VALUES ('" + username + "', '" + password + "', '" + getCurrentDate() + "')";
             stmt = conn.createStatement();
             return stmt.executeUpdate(sql);
         } catch (SQLException ex) {
